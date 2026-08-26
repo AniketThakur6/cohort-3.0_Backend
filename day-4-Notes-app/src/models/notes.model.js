@@ -4,15 +4,15 @@ const notesSchema = new mongoose.Schema({
   title:{
     type:String,
     required:true,
-    minlength:3
+    minLength: 3,
   },
   description : {
-    type:String,
+    type: String,
     required:true,
-    minlength:[20,"Minimun 20 characters is required"],
+    minLength: [20, `Minimum length of 20 characters`]
   }
 })
 
-const notesModel = mongoose.model("notes", notesSchema)
+const NotesModel = mongoose.model("notes", notesSchema)
 
-module.exports = notesModel;
+module.exports = NotesModel;

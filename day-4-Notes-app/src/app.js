@@ -1,13 +1,17 @@
-const express = require("express");
-const connectDB = require("./config/connectDB");
-const notesRouter = require("./routes/notes.route")
-
-const app = express();
-
-app.use(express.json());
+const express = require('express')
+const notesRouter = require('./router/notes.route')
+const connectDB = require('./config/connectionDB')
+const app = express()
 
 connectDB();
 
-app.use('/notes', notesRouter )
+app.use(express.json());
 
-module.exports = app;
+// app.get('/',(req,res)=>{
+//   console.log(`response successs`)
+//   res.send("server is working")
+// })
+
+app.use("/notes", notesRouter)
+
+module.exports = app
