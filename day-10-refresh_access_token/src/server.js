@@ -1,11 +1,11 @@
 import app from "./app/app.js";
 import config from "./config/config.js";
-import connectionToDB from "./config/db.js";
+import connectDB from './config/db.js'
 
-await connectionToDB();
+await connectDB();
 
-const port = config.PORT || 4000;
+const port = config.PORT;
 
-app.listen(port, () => {
-  console.log(`server is running at ${port}`);
-});
+app.listen(port,()=>{
+  console.log(`server is running at port ${port}`);
+})
