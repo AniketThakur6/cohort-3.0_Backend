@@ -2,7 +2,8 @@ import userModel from "../models/user.model.js";
 import { verifyAccessToken } from "../utils/auth.js";
 
 const authentication = async (req, res, next) => {
-  const token = req.headers.authorization.split(" ")[1];
+  const authorization = req.headers.authorization;
+  const token = authorization?.split(" ")[1];
 
   if (!token) {
     return res.status(401).json({
