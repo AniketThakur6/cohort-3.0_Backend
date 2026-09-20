@@ -11,6 +11,11 @@ const urlSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    anonymousUserId:{
+      type:String,
+      unqiue:true,
+      required:true,
+    },
     clicks: {
       type: Number,
       default: 0,
