@@ -6,6 +6,6 @@ import { ToastContainer } from "react-toastify";
 createRoot(document.getElementById("root")).render(
   <div>
     <App />
-    <ToastContainer theme="dark" />
+    <ToastContainer theme="dark" autoClose={2000} />
   </div>
 );

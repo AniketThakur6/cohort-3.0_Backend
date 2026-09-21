@@ -42,7 +42,7 @@ export const createShortUrlController = async (req, res) => {
 
   const user = await urlModel.findOne({ originalUrl: url, anonymousUserId });
 
-  const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // days
 
   // when user exist and give url which already have shortcode both belong to same user
   if (user && !alias) {
@@ -71,7 +71,7 @@ export const createShortUrlController = async (req, res) => {
 
     return res.status(400).json({
       // message: "URL shortend successfully",
-      error:"URL already shorten"
+      error: "URL already shorten",
       // data: {
       //   originalUrl: user.originalUrl,
       //   shortCode: user.shortCode,
@@ -182,7 +182,7 @@ export const deleteUrlcontroller = async (req, res) => {
   const { id } = req.params;
   const { anonymousUserId } = req.cookies;
 
-  const url = await urlModel.findOne({ _id, anonymousUserId });
+  const url = await urlModel.findOne({ _id: id, anonymousUserId });
 
   if (!url) {
     return res.status(404).json({ error: "url not found" });

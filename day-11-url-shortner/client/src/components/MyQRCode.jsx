@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { Download } from "lucide-react";
+import { Download, X } from "lucide-react";
 
-const MyQRCode = ({url}) => {
+const MyQRCode = ({ url, onClose }) => {
   const [favicon, setFavicon] = useState(null);
 
   useEffect(() => {
@@ -51,7 +51,7 @@ const MyQRCode = ({url}) => {
 
       const link = document.createElement("a");
       link.href = pngUrl;
-      const fileName = ''
+      const fileName = "";
       link.download = `${fileName}.png`;
 
       link.click();
@@ -61,28 +61,54 @@ const MyQRCode = ({url}) => {
   };
 
   return (
-    <div className="bg-zinc-900 border-2 border-gray-500 flex flex-col gap-3 rounded-xl w-fit p-5">
-      <div>
-        <QRCodeSVG
-          className="border-6 border-amber-600 rounded-xl"
-          id="qr-code"
-          value={url.originalUrl}
-          size={160}
-          level="H"
-          bgColor="#f3dec9"
-          marginSize={2}
-          imageSettings={{
-            src: favicon,
-            height: 40,
-            width: 40,
-            excavate: true,
-          }}
-        />
-      </div>
-      <div className="flex">
-        <button onClick={downloadQR} className="flex text-nowrap gap-2 items-center px-3 py-2 bg-amber-600 rounded-lg hover:bg-amber-700 transition-colors duration-250">
-         <Download size={20}/> Download QR
-        </button>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
+      onClick={onClose}
+    >
+      <div
+        className="flex max-h-[calc(100vh-2rem)] w-full max-w-sm flex-col gap-4 overflow-y-auto rounded-xl border-2 border-gray-500 bg-zinc-900 p-4 sm:p-5"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="truncate text-lg font-semibold text-amber-500">
+              {url.shortCode}
+            </p>
+            <p className="truncate text-sm text-gray-400">{url.originalUrl}</p>
+          </div>
+          
+        </div>
+        <div className="flex justify-center">
+          <QRCodeSVG
+            className="h-auto w-full max-w-60 rounded-xl border-6 border-amber-600"
+            id="qr-code"
+            value={url.originalUrl}
+            size={160}
+            level="H"
+            bgColor="#f3dec9"
+            marginSize={2}
+            imageSettings={{
+              src: favicon,
+              height: 40,
+              width: 40,
+              excavate: true,
+            }}
+          />
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={downloadQR}
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-amber-600 px-3 py-2 transition-colors duration-250 hover:bg-amber-700"
+          >
+            <Download size={20} /> Download QR
+          </button>
+          <button
+            onClick={onClose}
+            className="flex items-center justify-center gap-2 rounded-lg border border-gray-500 px-3 py-2 text-gray-200 transition-colors duration-250 hover:bg-zinc-700"
+          >
+            <X size={20} /> Close
+          </button>
+        </div>
       </div>
     </div>
   );

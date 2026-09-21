@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  ChartNoAxesColumn,
   ClipboardCheck,
   Copy,
   QrCode,
@@ -8,8 +9,9 @@ import {
 } from "lucide-react";
 import MyQRCode from "./MyQRCode";
 import axios from "axios";
+import api from "../apis/api";
 
-const UrlList = ({ url, openQrId, setOpenQrId }) => {
+const UrlList = ({ url, openQrId, setOpenQrId, deleteApi }) => {
   const [copy, setCopy] = useState(false);
 
   const domain = new URL(url.originalUrl).hostname;
@@ -18,7 +20,9 @@ const UrlList = ({ url, openQrId, setOpenQrId }) => {
 
   const handleCopy = async () => {
     console.log("hello");
-    await navigator.clipboard.writeText(`http://localhost:3000/${url.shortCode}`);
+    await navigator.clipboard.writeText(
+      `http://localhost:3000/${url.shortCode}`,
+    );
 
     setCopy(true);
 
@@ -32,25 +36,34 @@ const UrlList = ({ url, openQrId, setOpenQrId }) => {
     setOpenQrId((currentId) => (currentId === url._id ? null : url._id));
 
   return (
-    <div className="flex ml-1 items-center h-17 bg-zinc-900 border-2 border-gray-500 rounded-lg  w-280 px-3">
-      <div className="h-10 w-10 flex items-center">
-        <img src={favicon} alt="" className="w-8 h-8" />
+    <div className="flex flex-col lg:flex-row ml-1 gap-3 lg:gap-0 items-stretch lg:items-center lg:flex-nowrap min-h-17 py-2 md:py-3 bg-zinc-900 border-2 border-gray-500 rounded-lg w-full px-2 md:px-3">
+      <div className="flex min-w-0 flex-1 items-start lg:items-center gap-3">
+        <div className="h-8 w-8 md:h-10 md:w-10 shrink-0 flex items-center">
+          <img src={favicon} alt="" className="w-7 h-7 md:w-8 md:h-8" />
+        </div>
+        <div className="min-w-0 flex-1 flex flex-col gap-1 leading-4.5">
+          <a
+            href={`http://localhost:3000/${url.shortCode}`}
+            target="_blank"
+            className="flex lg:shrink-0 text-amber-500 w-fit font-medium hover:underline transition-all"
+          >
+            {url?.shortCode}
+          </a>
+          <p className="min-w-0 flex-1 text-gray-400 truncate">{url.originalUrl}</p>
+        </div>
+        <span className="md:hidden flex shrink-0 items-center gap-1 whitespace-nowrap text-sm font-medium text-gray-400">
+          <ChartNoAxesColumn size={18} stroke="#99A1AF" /> {url.clicks} Clicks
+        </span>
       </div>
-      <div className="flex-1 leading-5.5 ml-2">
+      <div className="hidden md:grid md:grid-cols-2 gap-2 lg:hidden">
+        <span className="col-span-2 flex whitespace-nowrap text-base sm:text-lg font-medium text-gray-400 items-center gap-1.5 mx-0 lg:mx-5">
+          <ChartNoAxesColumn size={22} stroke="#99A1AF" /> {url.clicks} Clicks
+        </span>
         <a
           href={`http://localhost:3000/${url.shortCode}`}
           target="_blank"
-          className="flex text-amber-500 w-fit font-medium hover:underline transition-all "
+          className="flex w-full cursor-pointer items-center justify-center gap-1 px-2 sm:px-3 py-2 rounded bg-amber-600 hover:bg-amber-700 transition-colors duration-250 lg:whitespace-nowrap"
         >
-          {url?.shortCode}
-        </a>
-        <p className="text-gray-400 w-150 truncate">{url.originalUrl}</p>
-      </div>
-      <div className="flex gap-3">
-        <a
-          href={`http://localhost:3000/${url.shortCode}`}
-          target="_blank" 
-         className="flex cursor-pointer items-center gap-1 px-3 py-1 rounded bg-amber-600 hover:bg-amber-700 transition-colors duration-250">
           <SquareArrowOutUpRight size={20} />
           Visit URL
         </a>
@@ -60,19 +73,19 @@ const UrlList = ({ url, openQrId, setOpenQrId }) => {
               e.stopPropagation();
               onQrToggle();
             }}
-            className="flex cursor-pointer items-center gap-1 px-3 py-1 rounded bg-amber-600 hover:bg-amber-700 transition-colors duration-250"
+            className="flex w-full cursor-pointer items-center justify-center gap-1 px-2 sm:px-3 py-2 rounded bg-amber-600 hover:bg-amber-700 transition-colors duration-250"
           >
             <QrCode size={20} /> QR
           </button>
           {isQrOpen && (
             <div className="absolute top-5 left-10 z-10">
-              <MyQRCode url={url} />
+              <MyQRCode url={url} onClose={onQrToggle} />
             </div>
           )}
         </div>
         <button
           onClick={handleCopy}
-          className="flex cursor-pointer items-center gap-1 px-3 py-2 rounded bg-amber-600 hover:bg-amber-700 transition-colors duration-250"
+          className="flex w-full cursor-pointer items-center justify-center gap-1 px-2 sm:px-3 py-2 rounded bg-amber-600 hover:bg-amber-700 transition-colors duration-250"
         >
           {copy ? (
             <>
@@ -84,9 +97,57 @@ const UrlList = ({ url, openQrId, setOpenQrId }) => {
             </>
           )}
         </button>
-        <button className="flex cursor-pointer items-center gap-1 px-3 py-1 rounded bg-amber-600 hover:bg-amber-700 transition-colors duration-250">
+        <button className="flex w-full cursor-pointer items-center justify-center gap-1 px-2 sm:px-3 py-2 rounded bg-amber-600 hover:bg-amber-700 transition-colors duration-250">
           <Trash size={20} /> Delete
         </button>
+      </div>
+      <span className="hidden lg:flex lg:shrink-0 whitespace-nowrap text-lg font-medium text-gray-400 items-center gap-1.5 mx-5">
+        <ChartNoAxesColumn size={22} stroke="#99A1AF" /> {url.clicks} Clicks
+      </span>
+      <div className="hidden lg:flex lg:items-center lg:gap-2 lg:shrink-0">
+        <a
+          href={`http://localhost:3000/${url.shortCode}`}
+          target="_blank"
+          className="flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md bg-amber-600 px-3 py-2 text-white hover:bg-amber-700 transition-colors duration-250"
+        >
+          <SquareArrowOutUpRight size={19} /> Visit URL
+        </a>
+        <div className="relative flex">
+          <button
+            onClick={(event) => {
+              event.stopPropagation();
+              onQrToggle();
+            }}
+            className="flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md bg-amber-600 px-3 py-2 text-white hover:bg-amber-700 transition-colors duration-250"
+          >
+            <QrCode size={19} /> QR
+          </button>
+          {isQrOpen && (
+            <div className="absolute right-0 top-12 z-10">
+              <MyQRCode url={url} onClose={onQrToggle} />
+            </div>
+          )}
+        </div>
+        <button
+          onClick={handleCopy}
+          className="flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md bg-amber-600 px-3 py-2 text-white hover:bg-amber-700 transition-colors duration-250"
+        >
+          {copy ? <ClipboardCheck size={19} /> : <Copy size={19} />}
+          {copy ? "Copied" : "Copy"}
+        </button>
+        <button
+          onClick={() => deleteApi?.(url._id)}
+          className="flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md bg-amber-600 px-3 py-2 text-white hover:bg-amber-700 transition-colors duration-250"
+        >
+          <Trash size={19} /> Delete
+        </button>
+      </div>
+      <div className="grid md:hidden grid-cols-5 gap-2 w-full">
+        <button onClick={handleCopy} className="col-span-2 flex w-full flex-nowrap cursor-pointer items-center justify-center gap-1 whitespace-nowrap px-2 py-1.5 rounded bg-amber-600 hover:bg-amber-700 transition-colors duration-250">{copy ? <ClipboardCheck size={18} /> : <Copy size={18} />}<span>{copy ? "Copied" : "Copy"}</span></button>
+        <button onClick={(event) => { event.stopPropagation(); onQrToggle(); }} aria-label="Show QR code" className="col-span-1 flex w-full cursor-pointer items-center justify-center gap-1 px-2 py-1.5 rounded bg-amber-600 hover:bg-amber-700 transition-colors duration-250"><QrCode size={18} /></button>
+        <a href={`http://localhost:3000/${url.shortCode}`} target="_blank" aria-label="Visit URL" className="col-span-1 flex items-center justify-center rounded bg-amber-600 px-2 py-1.5"><SquareArrowOutUpRight size={18} /></a>
+        <button onClick={() => deleteApi?.(url._id)} aria-label="Delete" className="col-span-1 flex items-center justify-center rounded bg-amber-600 px-2 py-1.5"><Trash size={18} /></button>
+        {isQrOpen && <div className="col-span-5 flex justify-center"><MyQRCode url={url} onClose={onQrToggle} /></div>}
       </div>
     </div>
   );
