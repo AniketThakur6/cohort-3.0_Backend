@@ -8,10 +8,12 @@ import {
   Trash,
 } from "lucide-react";
 import MyQRCode from "./MyQRCode";
+import DeleteConfirmModal from "./DeleteConfirmModal";
 import { toast } from "react-toastify";
 
 const ResultCard = ({ url, openQrId, setOpenQrId, deleteApi }) => {
   const [copy, setCopy] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const domain = url?.originalUrl ? new URL(url.originalUrl).hostname : null;
 
@@ -33,6 +35,12 @@ const ResultCard = ({ url, openQrId, setOpenQrId, deleteApi }) => {
   const isQrOpen = openQrId === url?._id;
   const onQrToggle = () =>
     setOpenQrId((currentId) => (currentId === url._id ? null : url._id));
+
+  const confirmDelete = async () => {
+    await deleteApi(url._id);
+    toast.success("Deleted successfully");
+    setIsDeleteOpen(false);
+  };
 
   return (
     <div className="flex flex-col lg:flex-row ml-1 gap-3 lg:gap-0 items-stretch lg:items-center lg:flex-nowrap min-h-15 bg-zinc-900 border-2 border-gray-500 rounded-lg w-full p-2 md:p-3">
@@ -97,10 +105,7 @@ const ResultCard = ({ url, openQrId, setOpenQrId, deleteApi }) => {
           )}
         </button>
         <button
-          onClick={() => {
-            deleteApi(url._id);
-            toast.success("Deleted successfully");
-          }}
+          onClick={() => setIsDeleteOpen(true)}
           className="flex w-full cursor-pointer items-center justify-center gap-1 px-2 sm:px-3 py-2 rounded bg-amber-600 hover:bg-amber-700 transition-colors duration-250"
         >
           <Trash size={20} /> Delete
@@ -110,9 +115,14 @@ const ResultCard = ({ url, openQrId, setOpenQrId, deleteApi }) => {
         <button onClick={handleCopy} className="col-span-2 flex w-full flex-nowrap cursor-pointer items-center justify-center gap-1 whitespace-nowrap px-2 py-1.5 rounded bg-amber-600 hover:bg-amber-700 transition-colors duration-250">{copy ? <ClipboardCheck size={18} /> : <Copy size={18} />}<span>{copy ? "Copied" : "Copy"}</span></button>
         <button onClick={(event) => { event.stopPropagation(); onQrToggle(); }} aria-label="Show QR code" className="col-span-1 flex w-full cursor-pointer items-center justify-center gap-1 px-2 py-1.5 rounded bg-amber-600 hover:bg-amber-700 transition-colors duration-250"><QrCode size={18} /></button>
         <a href={`http://localhost:3000/${url.shortCode}`} target="_blank" aria-label="Visit URL" className="col-span-1 flex items-center justify-center rounded bg-amber-600 px-2 py-1.5"><SquareArrowOutUpRight size={18} /></a>
-        <button onClick={() => { deleteApi(url._id); toast.success("Deleted successfully"); }} aria-label="Delete" className="col-span-1 flex items-center justify-center rounded bg-amber-600 px-2 py-1.5"><Trash size={18} /></button>
+        <button onClick={() => setIsDeleteOpen(true)} aria-label="Delete" className="col-span-1 flex items-center justify-center rounded bg-amber-600 px-2 py-1.5"><Trash size={18} /></button>
         {isQrOpen && <div className="col-span-5 flex justify-center"><MyQRCode url={url} onClose={onQrToggle} /></div>}
       </div>
+      <DeleteConfirmModal
+        isOpen={isDeleteOpen}
+        onCancel={() => setIsDeleteOpen(false)}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 };

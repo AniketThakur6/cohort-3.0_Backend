@@ -7,22 +7,19 @@ const api = axios.create({
 });
 
 api.interceptors.response.use(
-  (response)=>{
-    console.log(response)
-    if([201,200].includes(response.status)){
-      
-      toast.success(response.data.message)
+  (response) => {
+    if ([201, 200].includes(response.status)) {
+      toast.success(response.data.message);
     }
-    return response
+    return response;
   },
-  (error)=>{
-    if([400,401,500.404].includes(error.response?.status)){
-      console.log("working")
-      toast.error(error.response.data.error)
+  (error) => {
+    if ([400, 401, 500.404].includes(error.response?.status)) {
+      toast.error(error.response.data.error);
     }
 
-    return error
-  }
-)
+    return error;
+  },
+);
 
 export default api;

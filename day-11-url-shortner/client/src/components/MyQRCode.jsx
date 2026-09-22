@@ -51,7 +51,7 @@ const MyQRCode = ({ url, onClose }) => {
 
       const link = document.createElement("a");
       link.href = pngUrl;
-      const fileName = "";
+      const fileName = `${url.shortCode}`;
       link.download = `${fileName}.png`;
 
       link.click();
@@ -82,7 +82,7 @@ const MyQRCode = ({ url, onClose }) => {
           <QRCodeSVG
             className="h-auto w-full max-w-60 rounded-xl border-6 border-amber-600"
             id="qr-code"
-            value={url.originalUrl}
+            value={`http://localhost:3000/${url.shortCode}`}
             size={160}
             level="H"
             bgColor="#f3dec9"

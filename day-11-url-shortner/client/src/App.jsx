@@ -47,7 +47,7 @@ const App = () => {
             Long links?
           </h1>
           <p className="text-md text-gray-300 select-none">
-            Paste a link, get a short one, see how many people clicked it.
+            Paste a link, get a short one, see how many people clicked it.  *(link expires after 30 days)*
           </p>
         </div>
         <ShortenForm createUrl={createUrl} />
