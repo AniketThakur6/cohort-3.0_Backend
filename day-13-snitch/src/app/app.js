@@ -1,13 +1,18 @@
-import express from 'express';
+import express from "express";
 
 const app = express();
 
 app.use(express.json());
 
-app.get("/",(req,res)=>{
+app.get("/", (req, res) => {
   res.status(200).json({
-    message:"server is working"
-  })
-})
+    message: "user registered successfully",
+    data: {
+      email: user.email,
+      phone: user.phone,
+      id: user._id,
+    },
+  });
+});
 
 export default app;
