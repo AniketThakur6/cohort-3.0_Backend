@@ -1,8 +1,11 @@
-import app from './app/app.js'
-import config from './config/config.js'
+import app from "./app/app.js";
+import config from "./config/config.js";
+import connectToDB from "./config/db.js";
+
+await connectToDB();
 
 const port = config.PORT;
 
-app.listen(port,()=>{
+app.listen(port, () => {
   console.log(`server is working at ${port}`);
-})
+});
