@@ -12,7 +12,7 @@ export const registerUserController = async (req, res) => {
       message: "User Already exists with this email address",
       errors: [
         {
-          field: email,
+          path: email,
           message: "User Already exists with this email address",
         },
       ],
