@@ -49,13 +49,17 @@ const productSchema = new mongoose.Schema({
       },
     },
   ],
-  seller:{
+  seller: {
     type: mongoose.Types.ObjectId,
-    refs:"users",
+    refs: "users",
     required: true,
-  }
+  },
+  published: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const productModel = mongoose.model('products',productSchema);
+const productModel = mongoose.model("products", productSchema);
 
-export default productModel; 
+export default productModel;

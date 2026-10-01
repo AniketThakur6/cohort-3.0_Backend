@@ -1,7 +1,17 @@
 import { Router } from "express";
 import { authenticate, authSeller } from "./../middlewares/auth.middleware.js";
-import { createProduct, listAllProducts } from "../controllers/product.controller.js";
-import { productValidator } from "../validators/product.validator.js";
+import {
+  createProduct,
+  listAllProducts,
+  listAllProductsToSeller,
+  unlistProduct,
+  listProduct,
+} from "../controllers/product.controller.js";
+import {
+  productValidator,
+  listProductValidator,
+  unlistProductValidator,
+} from "../validators/product.validator.js";
 import multer from "multer";
 
 const upload = multer({
@@ -25,9 +35,27 @@ router.post(
     next();
   },
   productValidator,
-  createProduct
+  createProduct,
 );
 
-router.get("/",authenticate,listAllProducts)
+router.get("/", authenticate, listAllProducts);
+
+router.get("/seller", authenticate, authSeller, listAllProductsToSeller);
+
+router.patch(
+  "/unlist/:id",
+  authenticate,
+  authSeller,
+  unlistProductValidator,
+  unlistProduct,
+);
+
+router.patch(
+  "/list/:id",
+  authenticate,
+  authSeller,
+  listProductValidator,
+  listProduct,
+);
 
 export default router;

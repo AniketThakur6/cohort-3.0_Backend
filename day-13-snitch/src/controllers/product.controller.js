@@ -31,13 +31,64 @@ export async function createProduct(req, res) {
   });
 }
 
-export async function listAllProducts(req,res){
+export async function listAllProducts(req, res) {
+  const products = await productModel.find({ published: true });
+
+  return res.status(200).json({
+    message: "all products is fetched successfully",
+    data: {
+      products,
+    },
+  });
+}
+
+export async function listAllProductsToSeller(req, res) {
   const products = await productModel.find();
 
   return res.status(200).json({
-    message:"all products is fetched successfully",
-    data:{
-      products
-    }
-  })
+    message: "all products is fetched successfully",
+    data: {
+      products,
+    },
+  });
+}
+
+export async function unlistProduct(req, res) {
+  const { id } = req.params;
+
+  const product = await productModel.findById(id);
+
+  if (!product) {
+    return res.status(404).json({
+      message: "Product not found",
+    });
+  }
+
+  await productModel.findByIdAndUpdate(id, {
+    published: false,
+  });
+
+  res.status(200).json({
+    message: "Product  unlisted successfully",
+  });
+}
+
+export async function listProduct(req, res) {
+  const { id } = req.params;
+
+  const product = await productModel.findById(id);
+
+  if (!product) {
+    return res.status(404).json({
+      message: "Product is not found",
+    });
+  }
+
+  await productModel.findByIdAndUpdate(id, {
+    published: true,
+  });
+
+  res.status(200).json({
+    message: "Product is listed successfully",
+  });
 }
