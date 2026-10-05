@@ -14,9 +14,9 @@ export const generateToken = (userId) => {
 };
 
 export const verifyRefreshToken = (token) => {
-  return jwt.sign(token, config.REFRESH_SECRET_TOKEN);
+  return jwt.verify(token, config.REFRESH_SECRET_TOKEN);
 };
 
 export const verifyAccessToken = (token) => {
-  return jwt.sign(token, config.ACCESS_SECRET_TOKEN);
+  return jwt.verify(token, config.ACCESS_SECRET_TOKEN);
 };

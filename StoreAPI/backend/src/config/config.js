@@ -7,6 +7,7 @@ const config = {
   MONGO_URI: process.env.MONGO_URI,
   REFRESH_SECRET_TOKEN: process.env.REFRESH_SECRET_TOKEN,
   ACCESS_SECRET_TOKEN: process.env.ACCESS_SECRET_TOKEN,
+  IMAGEKIT_SECRET_KEY: process.env.IMAGEKIT_SECRET_KEY,
 };
 
 export default config;
