@@ -13,7 +13,9 @@ import {
 import { authenticate } from "./../middlewares/auth.middleware.js";
 import {
   loginIpLimiter,
+  logoutIpLimiter,
   registerIpLimiter,
+  standardIpLimiter,
 } from "../middlewares/rateLimit.middleware.js";
 
 const router = Router();
@@ -27,10 +29,10 @@ router.post(
 
 router.post("/login", loginIpLimiter, loginValidator, loginController);
 
-router.post("/refresh", refreshTokenController);
+router.post("/refresh-token", standardIpLimiter, refreshTokenController);
 
-router.get("/me", authenticate, getMe);
+router.get("/me", standardIpLimiter, authenticate, getMe);
 
-router.post("/logout", authenticate, logoutController);
+router.post("/logout", logoutIpLimiter, authenticate, logoutController);
 
 export default router;

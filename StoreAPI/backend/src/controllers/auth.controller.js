@@ -13,7 +13,7 @@ export const regsiterController = async (req, res) => {
       message: "Registration failed",
       errors: [
         {
-          path: "email",
+          field: "email",
           message: "User exisit with this Email",
         },
       ],
@@ -96,7 +96,7 @@ export const refreshTokenController = async (req, res) => {
       message: "Unauthorised",
       errors: [
         {
-          path: "refreshToken",
+          field: "refreshToken",
           message: "Refresh token is not present",
         },
       ],
@@ -120,6 +120,18 @@ export const refreshTokenController = async (req, res) => {
   }
 
   const user = await userModel.findById(decoded.userId);
+
+  if(!user){
+    return res.status(401).json({
+      message:"Unauthorized",
+      errors:[
+        {
+          field: "Access Token",
+          message: "User doesn't exist"
+        }
+      ]
+    })
+  }
 
   const tokenHash = crypto
     .createHash("sha256")

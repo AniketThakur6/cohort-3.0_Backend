@@ -3,11 +3,11 @@ import config from "../config/config.js";
 
 export const generateToken = (userId) => {
   const refreshToken = jwt.sign({ userId }, config.REFRESH_SECRET_TOKEN, {
-    expiresIn: "7d",
+    expiresIn: config.REFRESH_TOKEN_EXPIRY,
   });
 
   const accessToken = jwt.sign({ userId }, config.ACCESS_SECRET_TOKEN, {
-    expiresIn: "2d",
+    expiresIn: config.ACCESS_TOKEN_EXPIRY,
   });
 
   return { refreshToken, accessToken };

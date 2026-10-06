@@ -33,7 +33,18 @@ const productSchema = new mongoose.Schema(
       },
     },
     images: {
-      type: [{ type: String }],
+      type: [
+        {
+          url: {
+            type: String,
+            required: true,
+          },
+          fileId: {
+            type: String,
+            required: true,
+          },
+        },
+      ],
       validate: {
         validator: (images) => images.length <= 5,
         message: "A product can have at most 5 images",
@@ -52,11 +63,11 @@ const productSchema = new mongoose.Schema(
         },
       },
     ],
-    seller:{
+    seller: {
       type: mongoose.Types.ObjectId,
-      ref:"users",
-      required:true
-    }
+      ref: "users",
+      required: true,
+    },
   },
   {
     timestamps: true,
