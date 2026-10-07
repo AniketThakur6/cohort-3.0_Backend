@@ -2,7 +2,7 @@ import { rateLimit } from "express-rate-limit";
 
 export const loginIpLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 min
-  limit: 5, // 5 req
+  limit: 50000, // 5 req
   standardHeaders: true,
   legacyHeaders: false,
   ipv6Subnet: 56,
@@ -10,7 +10,7 @@ export const loginIpLimiter = rateLimit({
 
 export const registerIpLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  limit: 8, // 8 req
+  limit: 899999, // 8 req
   standardHeaders: true,
   legacyHeaders: false,
   ipv6Subnet: 56,
@@ -18,7 +18,7 @@ export const registerIpLimiter = rateLimit({
 
 export const logoutIpLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  limit: 8, // 8 req
+  limit: 800, // 8 req
   standardHeaders: true,
   legacyHeaders: false,
   ipv6Subnet: 56,

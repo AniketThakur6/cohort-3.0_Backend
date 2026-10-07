@@ -19,6 +19,17 @@ export const registerValidator = [
     .isString().withMessage("Password must be String").bail()
     .matches(/^\S.*$/).withMessage("Invalid password").bail()
     .isLength({min:6,max:50}).withMessage("Password must be between 6 and 50 characters"),
+  body("confirmPassword")
+    .exists().withMessage('confirm Password is required').bail()
+    .isString().withMessage("confirm Password must be String").bail()
+    .matches(/^\S.*$/).withMessage("Invalid confirm password").bail()
+    .isLength({min:6,max:50}).withMessage("confirm Password must be between 6 and 50 characters")
+    .custom((confirmPassword, {req})=>{
+      if(confirmPassword !== req.body.password){
+        throw new Error("Passwords do not match with Confirm Password")
+      }
+      return true;
+    }),  
   (req,res,next)=>{
 
     const errors = validationResult(req);

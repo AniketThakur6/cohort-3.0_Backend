@@ -19,6 +19,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    confirmPasswordHash: {
+      type: String,
+      required: true,
+    },
     refreshTokenHash: {
       type: String,
     },

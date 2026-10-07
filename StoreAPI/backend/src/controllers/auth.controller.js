@@ -4,7 +4,13 @@ import { generateToken, verifyRefreshToken } from "./../utils/auth.utils.js";
 import crypto from "crypto";
 
 export const regsiterController = async (req, res) => {
-  const { email, name, password } = req.body;
+  const { email, name, password, confirmPassword } = req.body;
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({
+      message: "Passwords do not match with Confirm Password",
+    });
+  }
 
   const isUserAlreadyExist = await userModel.findOne({ email });
 
@@ -24,6 +30,7 @@ export const regsiterController = async (req, res) => {
     email,
     name,
     passwordHash: await bcrypt.hash(password, 12),
+    confirmPasswordHash: await bcrypt.hash(confirmPassword, 12),
   });
 
   res.status(201).json({
@@ -121,16 +128,16 @@ export const refreshTokenController = async (req, res) => {
 
   const user = await userModel.findById(decoded.userId);
 
-  if(!user){
+  if (!user) {
     return res.status(401).json({
-      message:"Unauthorized",
-      errors:[
+      message: "Unauthorized",
+      errors: [
         {
           field: "Access Token",
-          message: "User doesn't exist"
-        }
-      ]
-    })
+          message: "User doesn't exist",
+        },
+      ],
+    });
   }
 
   const tokenHash = crypto
