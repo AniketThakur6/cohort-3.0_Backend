@@ -10,7 +10,8 @@ const app = express();
 
 app.use(
   cors({
-    origin: config.FRONTEND_URL,
+    // origin: config.FRONTEND_URL,
+    origin:"http://192.168.31.230:5173",
      credentials: true,
   }),
 );

@@ -1,13 +1,16 @@
-import { Outdent } from 'lucide-react'
-import React from 'react'
-import { Outlet } from 'react-router'
+import { useContext } from "react";
+import { Navigate, Outlet } from "react-router";
+import { AuthContext } from "../../context/AuthContext";
+import SessionLoader from "../../components/SessionLoader";
 
 const ProtectedRoute = () => {
-  
-  
-  return (
-    <Outlet />
-  )
-}
+  const { isAuthenticated, authLoading } = useContext(AuthContext);
 
-export default ProtectedRoute
+  if (authLoading) {
+    return <SessionLoader />;
+  }
+
+  return isAuthenticated ? <Outlet /> : <Navigate to="/auth" replace />;
+};
+
+export default ProtectedRoute;

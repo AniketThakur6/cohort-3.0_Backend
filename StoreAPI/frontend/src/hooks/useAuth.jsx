@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import api from "../api/api";
@@ -7,8 +7,8 @@ import { toast } from "react-toastify";
 
 const useAuth = () => {
   const navigate = useNavigate();
-
-  const { accessToken, setAccessToken } = useContext(AuthContext);
+  const formRef = useRef(null);
+  const { setUser, setAccessToken } = useContext(AuthContext);
 
   const {
     register,
@@ -29,10 +29,37 @@ const useAuth = () => {
     try {
       const response = await api.post("/auth/login", obj);
 
-      console.log(response);
-    } catch (error) {
-      toast.error()
+      const { user, accessToken } = response?.data;
+
+      setAccessToken(accessToken);
+      setUser(user);
+      navigate("/");
+      formRef.current.reset();
+    } catch (error) {}
+  };
+
+  const registerSubmit = async (data) => {
+    const { password, confirmPassword } = data;
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
     }
+
+    const obj = {
+      ...data,
+    };
+    
+    try {
+      const response = await api.post("/auth/register",obj)
+
+      formRef.current.reset();
+      navigate('/auth');
+
+    } catch (error) {
+      
+    }
+
   };
 
   return {
@@ -43,6 +70,8 @@ const useAuth = () => {
     isSubmitting,
     navigate,
     loginSubmit,
+    registerSubmit,
+    formRef,
   };
 };
 

@@ -8,8 +8,36 @@ import {
   Star,
   ChevronDown,
 } from "lucide-react";
+import { useContext } from "react";
+import { StoreContext } from "../context/StoreContext";
+import ProductCard from "../components/ProductCard";
+import { useNavigate } from "react-router";
 
 const ProductPage = () => {
+  const navigate = useNavigate();
+  const { productData } = useContext(StoreContext);
+
+  if (!productData) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center px-5">
+        <div className="text-center">
+          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.03]">
+            <Package className="text-zinc-600" size={28} />
+          </div>
+
+          <h1 className="text-xl font-semibold text-zinc-100">
+            Product not found
+          </h1>
+
+          <p className="mt-2 max-w-sm text-sm leading-6 text-zinc-500">
+            The product you're looking for doesn't exist or may have been
+            removed.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#080808] text-white">
       {/* Main */}
@@ -31,7 +59,10 @@ const ProductPage = () => {
           </div>
 
           {/* Add product */}
-          <button className="flex h-10 items-center justify-center gap-2 rounded-xl bg-orange-500 px-4 text-sm font-semibold text-black transition hover:bg-orange-400">
+          <button
+            onClick={() => navigate(`/add`)}
+            className="flex h-10 items-center justify-center gap-2 rounded-xl bg-orange-500 px-4 text-sm font-semibold text-black transition hover:bg-orange-400"
+          >
             <Plus size={17} />
             Add product
           </button>
@@ -55,122 +86,19 @@ const ProductPage = () => {
 
         {/* Filters */}
         <div className="mb-7 flex flex-wrap items-center gap-3">
-          <button className="flex h-10 items-center gap-2 rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 text-sm text-zinc-300 transition hover:bg-white/[0.06]">
-            <SlidersHorizontal size={16} />
-            Filters
-          </button>
-
           <button className="flex h-10 items-center gap-2 rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 text-sm text-zinc-400 transition hover:bg-white/[0.06]">
             All products
-            <ChevronDown size={15} />
           </button>
 
           <div className="ml-auto hidden text-sm text-zinc-600 sm:block">
-            12 products
+            {productData?.length ?? 0} products
           </div>
         </div>
-
         {/* Products */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {/* Product Card */}
-          <div className="group overflow-hidden rounded-2xl border border-white/[0.07] bg-[#101010] transition duration-300 hover:-translate-y-1 hover:border-white/[0.12]">
-            {/* Image */}
-            <div className="relative aspect-[4/3] overflow-hidden bg-zinc-900">
-              <div className="flex h-full items-center justify-center">
-                <Package size={55} strokeWidth={1} className="text-zinc-700" />
-              </div>
-
-              <span className="absolute left-3 top-3 rounded-lg bg-orange-500 px-2.5 py-1 text-[11px] font-semibold text-black">
-                NEW
-              </span>
-            </div>
-
-            {/* Content */}
-            <div className="p-4">
-              <div className="mb-2 flex items-center justify-between">
-                <span className="text-xs text-zinc-600">Electronics</span>
-
-                <div className="flex items-center gap-1 text-xs text-zinc-400">
-                  <Star
-                    size={13}
-                    fill="currentColor"
-                    className="text-orange-500"
-                  />
-                  4.8
-                </div>
-              </div>
-
-              <h2 className="font-medium text-zinc-100">
-                Premium Wireless Headphones
-              </h2>
-
-              <p className="mt-1 line-clamp-2 text-xs leading-5 text-zinc-600">
-                High quality wireless headphones with immersive sound.
-              </p>
-
-              <div className="mt-4 flex items-center justify-between">
-                <span className="text-lg font-semibold">₹4,999</span>
-
-                <button className="rounded-lg bg-white/[0.06] px-3 py-2 text-xs font-medium text-zinc-300 transition hover:bg-orange-500 hover:text-black">
-                  View
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Repeat cards */}
-          {[
-            ["Minimal Backpack", "₹2,499", "Lifestyle"],
-            ["Smart Watch Pro", "₹6,999", "Accessories"],
-            ["Mechanical Keyboard", "₹3,799", "Electronics"],
-            ["Everyday Sneakers", "₹3,299", "Fashion"],
-            ["Desk Lamp", "₹1,499", "Home"],
-            ["Travel Bottle", "₹899", "Lifestyle"],
-            ["Wireless Mouse", "₹1,299", "Electronics"],
-          ].map(([name, price, category]) => (
-            <div
-              key={name}
-              className="group overflow-hidden rounded-2xl border border-white/[0.07] bg-[#101010] transition duration-300 hover:-translate-y-1 hover:border-white/[0.12]"
-            >
-              <div className="relative aspect-[4/3] overflow-hidden bg-zinc-900">
-                <div className="flex h-full items-center justify-center">
-                  <Package
-                    size={55}
-                    strokeWidth={1}
-                    className="text-zinc-700 transition group-hover:text-zinc-600"
-                  />
-                </div>
-              </div>
-
-              <div className="p-4">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="text-xs text-zinc-600">{category}</span>
-
-                  <div className="flex items-center gap-1 text-xs text-zinc-400">
-                    <Star
-                      size={13}
-                      fill="currentColor"
-                      className="text-orange-500"
-                    />
-                    4.6
-                  </div>
-                </div>
-
-                <h2 className="font-medium text-zinc-100">{name}</h2>
-
-                <p className="mt-1 text-xs text-zinc-600">
-                  Premium quality product designed for everyday use.
-                </p>
-
-                <div className="mt-4 flex items-center justify-between">
-                  <span className="text-lg font-semibold">{price}</span>
-
-                  <button className="rounded-lg bg-white/[0.06] px-3 py-2 text-xs font-medium text-zinc-300 transition hover:bg-orange-500 hover:text-black">
-                    View
-                  </button>
-                </div>
-              </div>
-            </div>
+          {productData?.map((product) => (
+            <ProductCard key={product._id} product={product} />
           ))}
         </div>
       </main>

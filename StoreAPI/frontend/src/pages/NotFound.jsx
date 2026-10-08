@@ -5,8 +5,10 @@
   ShoppingBag,
 } from "lucide-react";
 import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router";
 
 const NotFound = () => {
+  const navigate = useNavigate()
   return (
     <div className="h-fit bg-[#080808] text-white">
       {/* Background */}
@@ -15,7 +17,6 @@ const NotFound = () => {
       </div>
 
       {/* Header */}
-      <Navbar />
 
       {/* Content */}
       <main className="relative flex min-h-[calc(100vh-72px)] items-center justify-center px-5 py-10">
@@ -48,6 +49,7 @@ const NotFound = () => {
           {/* Actions */}
           <div className="mt-7 flex flex-col gap-3 flex-row">
             <button
+              onClick={()=> navigate("/")}
               type="button"
               className="flex flex-1  items-center justify-center gap-2 rounded-xl bg-orange-500 text-sm font-semibold text-black transition hover:bg-orange-400"
             >
@@ -56,6 +58,7 @@ const NotFound = () => {
             </button>
 
             <button
+              onClick={()=> navigate(-1)}
               type="button"
               className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] text-sm font-medium text-zinc-400 transition hover:bg-white/[0.06] hover:text-white"
             >

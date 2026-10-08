@@ -17,13 +17,14 @@ const LoginPage = () => {
     handleSubmit,
     isSubmitting,
     errors,
+    formRef,
     navigate,
     loginSubmit,
   } = useAuth();
 
-  const notify=()=>{
-    toast.error("hello")
-  }
+  const notify = () => {
+    toast.error("hello");
+  };
 
   return (
     <div className="min-h-screen bg-[#080808] text-white flex items-center justify-center px-4 py-10">
@@ -63,7 +64,11 @@ const LoginPage = () => {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit(loginSubmit)} className="space-y-5">
+          <form
+            ref={formRef}
+            onSubmit={handleSubmit(loginSubmit)}
+            className="space-y-5"
+          >
             {/* Email */}
             <div>
               <label className="mb-2 block text-sm font-medium text-zinc-300">
@@ -130,7 +135,9 @@ const LoginPage = () => {
                 </button>
               </div>
               {errors.password && (
-                <p className="text-md text-red-700">{errors.password.message}</p>
+                <p className="text-md text-red-700">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 
@@ -162,7 +169,7 @@ const LoginPage = () => {
             <p className="text-sm text-zinc-500">
               Don't have an account?{" "}
               <button
-              onClick={notify}
+                onClick={() => navigate("/auth/register")}
                 type="button"
                 className="font-medium text-orange-500 transition hover:text-orange-400"
               >

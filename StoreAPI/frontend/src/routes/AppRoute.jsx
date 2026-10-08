@@ -59,6 +59,10 @@ const AppRoute = () => {
               path: ":id/edit",
               element: <EditProduct />,
             },
+            {
+              path: "/profile",
+              element:<Profile />
+            }
           ],
         },
       ],

@@ -9,7 +9,7 @@ createRoot(document.getElementById("root")).render(
   <AuthContextProvider>
     <StoreContextProvider>
       <AppRoute />
-      <ToastContainer autoClose={3000} theme="dark" transition={Bounce} />
+      <ToastContainer autoClose={2500} theme="dark" transition={Bounce} />
     </StoreContextProvider>
   </AuthContextProvider>,
 );

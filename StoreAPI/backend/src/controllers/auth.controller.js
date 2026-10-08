@@ -163,6 +163,7 @@ export const refreshTokenController = async (req, res) => {
     user._id,
   );
 
+  res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
   await userModel.updateOne(
     { _id: user._id },
     {
@@ -172,8 +173,6 @@ export const refreshTokenController = async (req, res) => {
         .digest("hex"),
     },
   );
-
-  res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
 
   res.status(200).json({
     message: "token rotated successsfully",
