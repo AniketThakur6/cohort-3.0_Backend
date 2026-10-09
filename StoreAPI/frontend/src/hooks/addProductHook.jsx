@@ -72,7 +72,7 @@ const addProductHook = () => {
     }
   };
 
-  const editProduct = async (data) => {
+  const editProduct = async (id,data) => {
     if (selectedSizes.length === 0) {
       toast.error("Select at least one size");
       return;

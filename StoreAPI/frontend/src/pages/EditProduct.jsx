@@ -1,4 +1,4 @@
-import { useCallback,useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import {
   ArrowLeft,
@@ -16,6 +16,7 @@ import api from "../api/api";
 import ProductImages from "./ProductImages";
 import SessionLoader from "../components/SessionLoader";
 import addProductHook from "../hooks/addProductHook";
+import NotFound from "./NotFound";
 
 const AVAILABLE_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
 
@@ -36,10 +37,8 @@ const EditProduct = () => {
     reset,
     editProduct,
   } = addProductHook();
-
+  const [product, setProduct] = useState(null);
   const [productLoading, setProductLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [existingImages, setExistingImages] = useState([]);
   // Fetch the existing product and populate the form.
   const fetchProduct = useCallback(async () => {
     try {
@@ -53,6 +52,8 @@ const EditProduct = () => {
 
       const product = response.data?.product;
 
+      setProduct(product);
+
       const sizes = product.sizes ?? [];
       const stockValues = Object.fromEntries(
         sizes.map(({ size, stock }) => [size, Number(stock ?? 0)]),
@@ -60,7 +61,13 @@ const EditProduct = () => {
       setSelectedSizes(sizes.map((item) => item.size));
       // Keep existing image URLs separately from newly uploaded files.
       const imageUrls = (product?.images || []).map((image) => image.url);
-      setExistingImages(imageUrls);
+      setImages(
+        imageUrls.map((url) => ({
+          file: null,
+          preview: url,
+          existing: true,
+        })),
+      );
 
       reset({
         title: product.title ?? "",
@@ -71,13 +78,7 @@ const EditProduct = () => {
         stock: stockValues,
       });
 
-      setImages(
-        imageUrls.map((url) => ({
-          file: null,
-          preview: url,
-          existing: true,
-        })),
-      );
+      
     } catch (error) {
     } finally {
       setProductLoading(false);
@@ -108,6 +109,10 @@ const EditProduct = () => {
     return <SessionLoader />;
   }
 
+  if (!product) {
+    return <NotFound />;
+  }
+
   return (
     <div className="min-h-screen bg-[#080808] text-white">
       <main className="mx-auto max-w-6xl px-5 py-8 lg:px-8 lg:py-7">
@@ -121,7 +126,7 @@ const EditProduct = () => {
         </button>
 
         <form
-          onSubmit={handleSubmit(editProduct)}
+          onSubmit={handleSubmit((data)=>editProduct(id,data))}
           className="grid items-start gap-6 lg:grid-cols-[1fr_340px]"
         >
           {/* Product details */}
@@ -422,7 +427,8 @@ const EditProduct = () => {
             <ProductImages images={images} setImages={setImages} />
 
             <p className="text-xs leading-5 text-zinc-600">
-              Uploading new images will replace all existing images when you save.
+              Uploading new images will replace all existing images when you
+              save.
             </p>
           </div>
         </form>

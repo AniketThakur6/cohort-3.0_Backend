@@ -23,7 +23,7 @@ api.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    if ([400, 401, 500, 404, 429].includes(error.response?.status)) {
+    if ([400, 401, 500, 404,409, 429].includes(error.response?.status)) {
       const message =
         error.response?.data?.errors?.[0]?.msg ??
         error.response?.data?.errors?.[0]?.message ??

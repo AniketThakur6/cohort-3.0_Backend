@@ -33,7 +33,7 @@ const useAuth = () => {
       setAccessToken(accessToken);
       setUser(user);
       navigate("/");
-      formRef.current.reset();
+      reset();
     } catch (error) {}
   };
 
