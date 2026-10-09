@@ -9,11 +9,16 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => {
     if ([200, 201].includes(response.status)) {
-      if (response.data.message !== "successfully fetched user") {
-        if (response.data.message !== "token rotated successsfully") {
-          toast.success(response.data.message);
-        }
-      }
+      if (response.data.message !== "successfully fetched user")
+        return response.data;
+
+      if (response.data.message !== "token rotated successsfully")
+        return response.data;
+
+      if (response.data.message !== "Product fectched successfully")
+        return response.data;
+
+      toast.success(response.data.message);
     }
     return response.data;
   },

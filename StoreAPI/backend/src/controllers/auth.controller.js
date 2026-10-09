@@ -183,7 +183,7 @@ export const refreshTokenController = async (req, res) => {
 };
 
 export const getMe = async (req, res) => {
-  const user = await userModel.findById(req.userId, { email: 1, name: 1 });
+  const user = await userModel.findById(req.userId, { email: 1, name: 1, createdAt:1 });
 
   if (!user) {
     return res.status(404).json({
@@ -198,6 +198,7 @@ export const getMe = async (req, res) => {
         userId: user._id,
         name: user.name,
         email: user.email,
+        createdAt: user.createdAt,
       },
     },
   });

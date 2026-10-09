@@ -2,6 +2,13 @@ import productModel from "../models/product.model.js";
 import uploadFile, { deleteUploadedFile } from "../services/storage.service.js";
 
 export const createProduct = async (req, res) => {
+  if (!req.files || req.files.length < 1) {
+    return res.status(400).json({
+      success: false,
+      message: "At least one image is needed",
+    });
+  }
+
   const response = await uploadFile(req.files);
 
   const imagesURL = response.map((file) => ({

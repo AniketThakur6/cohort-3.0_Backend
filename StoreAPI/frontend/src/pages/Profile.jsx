@@ -4,18 +4,49 @@ import {
   Mail,
   ShieldCheck,
   LogOut,
-  KeyRound,
   CalendarDays,
-  ChevronRight,
 } from "lucide-react";
+import { useContext, useState } from "react";
+import { AuthContext } from "./../context/AuthContext";
+import api from "../api/api";
+import { useNavigate } from "react-router";
+import SessionLoader from "./../components/SessionLoader";
 
 const Profile = () => {
+  const { user,setUser, accessToken, setAccessToken, setToRoute } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const logout = async () => {
+    setLoading(true);
+    try {
+      const reponse = await api.post("/auth/logout",{},{
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      setUser(null);
+      setToRoute(false)
+      setAccessToken(null);
+      navigate("/");
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <SessionLoader />;
+  }
+
   return (
     <div className="min-h-screen bg-[#080808] text-white">
       {/* Header */}
       <header className="border-b border-white/[0.06] bg-[#080808]/90">
         <div className="mx-auto flex h-16 max-w-5xl items-center px-5 lg:px-8">
           <button
+            onClick={() => navigate(-1)}
             type="button"
             className="mr-4 flex h-9 w-9 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-white/[0.05] hover:text-white"
           >
@@ -39,25 +70,35 @@ const Profile = () => {
 
           <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center">
             {/* Avatar */}
-            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-orange-500 text-2xl font-bold text-black shadow-xl shadow-orange-500/10">
-              AT
+            <div className="flex h-20 w-20 shrink-0 items-center uppercase justify-center rounded-2xl bg-orange-500 text-2xl font-bold text-black shadow-xl shadow-orange-500/10">
+              {user.name
+                .split(" ")
+                .slice(0, 2)
+                .map((name) => name[0])}
             </div>
 
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-2xl font-semibold">Aniket Thakur</h2>
-
-                <span className="flex items-center gap-1 rounded-full border border-emerald-500/15 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-400">
-                  <ShieldCheck size={12} />
-                  Verified
-                </span>
+                <h2 className="text-2xl font-semibold capitalize truncate">
+                  {user.name}
+                </h2>
               </div>
 
-              <p className="mt-1 text-sm text-zinc-500">aniket@example.com</p>
+              <p className="mt-1 text-sm text-zinc-500">{user.email}</p>
 
               <div className="mt-3 flex items-center gap-2 text-xs text-zinc-700">
                 <CalendarDays size={14} />
-                Member since October 2026
+                Member since{" "}
+                <span className="text-zinc-500">
+                  {new Date("2026-10-03T14:25:01.347Z").toLocaleDateString(
+                    "en-US",
+                    {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    },
+                  )}
+                </span>
               </div>
             </div>
           </div>
@@ -83,8 +124,8 @@ const Profile = () => {
               <div className="min-w-0 flex-1">
                 <p className="text-xs text-zinc-600">Full name</p>
 
-                <p className="mt-1 text-sm font-medium text-zinc-200">
-                  Aniket Thakur
+                <p className="mt-1 text-sm capitalize font-medium text-zinc-200">
+                  {user.name}
                 </p>
               </div>
             </div>
@@ -99,30 +140,10 @@ const Profile = () => {
                 <p className="text-xs text-zinc-600">Email address</p>
 
                 <p className="mt-1 truncate text-sm font-medium text-zinc-200">
-                  aniket@example.com
+                  {user.email}
                 </p>
               </div>
             </div>
-
-            {/* Password */}
-            <button
-              type="button"
-              className="flex w-full items-center gap-4 px-6 py-5 text-left transition hover:bg-white/[0.02] sm:px-7"
-            >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-zinc-500">
-                <KeyRound size={18} />
-              </div>
-
-              <div className="min-w-0 flex-1">
-                <p className="text-xs text-zinc-600">Password</p>
-
-                <p className="mt-1 text-sm font-medium text-zinc-200">
-                  ••••••••••••
-                </p>
-              </div>
-
-              <ChevronRight size={17} className="text-zinc-700" />
-            </button>
           </div>
         </section>
 
@@ -162,6 +183,7 @@ const Profile = () => {
 
         {/* Logout */}
         <button
+          onClick={logout}
           type="button"
           className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-red-500/10 bg-red-500/[0.03] text-sm font-medium text-red-400 transition hover:bg-red-500/[0.08]"
         >

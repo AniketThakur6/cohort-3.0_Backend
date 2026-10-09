@@ -8,14 +8,18 @@ import {
   Star,
   ChevronDown,
 } from "lucide-react";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { StoreContext } from "../context/StoreContext";
 import ProductCard from "../components/ProductCard";
 import { useNavigate } from "react-router";
 
 const ProductPage = () => {
   const navigate = useNavigate();
-  const { productData } = useContext(StoreContext);
+  const { productData,productRefresh } = useContext(StoreContext);
+
+  useEffect(()=>{
+    productRefresh();
+  },[])
 
   if (!productData) {
     return (

@@ -1,30 +1,29 @@
 import { useRef, useState } from "react";
 import { ImagePlus, Package, X } from "lucide-react";
 
-export default function ProductImages() {
-  const [images, setImages] = useState([]);
+export default function ProductImages({images,setImages}) {
   const inputRef = useRef(null);
 
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files || []);
 
-    const newImages = files.map((file) => ({
+  const handleImageChange = (e)=>{
+    const files = Array.from(e.target.files || [])
+
+    const newImage = files.map(file => ({
       file,
-      preview: URL.createObjectURL(file),
-    }));
+      preview: URL.createObjectURL(file)
+    }))
 
-    setImages((prev) => [...prev, ...newImages].slice(0, 5));
+    setImages(prev => [...newImage,...prev].slice(0,5))
 
-    // Allows selecting the same file again
-    e.target.value = "";
-  };
+    e.target.value = ""
+  }
 
-  const removeImage = (index) => {
-    setImages((prev) => {
+  const removeImage = (index)=>{
+    setImages((prev)=>{
       URL.revokeObjectURL(prev[index].preview);
-      return prev.filter((_, i) => i !== index);
-    });
-  };
+      return prev.filter((_,i)=> i !== index);
+    })
+  }
 
   return (
     <aside>
@@ -42,7 +41,7 @@ export default function ProductImages() {
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="group flex aspect-square w-full flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.1] bg-white/[0.02] transition hover:border-orange-500/50 hover:bg-orange-500/[0.03]"
+          className="group flex w-full py-3 flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.1] bg-white/[0.02] transition hover:border-orange-500/50 hover:bg-orange-500/[0.03]"
         >
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/[0.05] text-zinc-500 transition group-hover:bg-orange-500/10 group-hover:text-orange-500">
             <ImagePlus size={25} />

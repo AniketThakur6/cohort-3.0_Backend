@@ -10,9 +10,8 @@ const app = express();
 
 app.use(
   cors({
-    // origin: config.FRONTEND_URL,
-    origin:"http://192.168.31.230:5173",
-     credentials: true,
+    origin: config.FRONTEND_URL,
+    credentials: true,
   }),
 );
 
@@ -23,7 +22,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRouter);
 app.use("/api/products", productRouter);
 
-app.get("/",registerIpLimiter,(req, res) => {
+app.get("/", registerIpLimiter, (req, res) => {
   res.send("working");
 });
 

@@ -20,7 +20,6 @@ const Register = () => {
     handleSubmit,
     isSubmitting,
     errors,
-    formRef,
     getValues,
     registerSubmit,
     navigate,
@@ -65,7 +64,6 @@ const Register = () => {
 
           {/* Form */}
           <form
-            ref={formRef}
             onSubmit={handleSubmit(registerSubmit)}
             className="space-y-5"
           >

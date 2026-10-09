@@ -4,13 +4,13 @@ import { AuthContext } from "../../context/AuthContext";
 import SessionLoader from "../../components/SessionLoader";
 
 const ProtectedRoute = () => {
-  const { isAuthenticated, authLoading } = useContext(AuthContext);
+  const { isAuthenticated, authLoading, toRoute } = useContext(AuthContext);
 
   if (authLoading) {
     return <SessionLoader />;
   }
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/auth" replace />;
+  return isAuthenticated ? <Outlet /> :  toRoute ? <Navigate to="/auth" replace /> : <Navigate to="/" replace />;
 };
 
 export default ProtectedRoute;

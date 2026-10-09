@@ -10,6 +10,16 @@ const AuthContextProvider = ({ children }) => {
   const [authLoading, setAuthLoading] = useState(true);
   const isAuthenticated = !!accessToken;
 
+  const [toRoute, setToRoute] = useState(true)
+
+  useEffect(()=>{
+    if(accessToken === null){
+      setTimeout(()=>{
+        setToRoute(true)
+      },1500)
+    }
+  },[accessToken])
+
   useEffect(() => {
     let isMounted = true;
 
@@ -64,6 +74,7 @@ const AuthContextProvider = ({ children }) => {
         setUser,
         isAuthenticated,
         authLoading,
+        toRoute, setToRoute
       }}
     >
       {children}

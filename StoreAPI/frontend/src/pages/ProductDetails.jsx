@@ -43,7 +43,6 @@ const ProductDetails = () => {
       });
 
       navigate("/");
-      productRefresh();
       setLoading(false);
     } catch (error) {
     } finally {
@@ -181,7 +180,7 @@ const ProductDetails = () => {
                   if (!isAuthenticated) {
                     toast.info("Please login first");
                   }
-                  navigate("/:id/edit");
+                  navigate(`/${param.id}/edit`);
                 }}
                 type="button"
                 className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/[0.07] bg-white/[0.03] text-sm text-zinc-400 transition hover:bg-white/[0.06] hover:text-white"

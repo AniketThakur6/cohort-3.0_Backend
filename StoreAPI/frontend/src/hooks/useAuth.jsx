@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 
 const useAuth = () => {
   const navigate = useNavigate();
-  const formRef = useRef(null);
   const { setUser, setAccessToken } = useContext(AuthContext);
 
   const {
@@ -49,17 +48,13 @@ const useAuth = () => {
     const obj = {
       ...data,
     };
-    
+
     try {
-      const response = await api.post("/auth/register",obj)
+      const response = await api.post("/auth/register", obj);
 
-      formRef.current.reset();
-      navigate('/auth');
-
-    } catch (error) {
-      
-    }
-
+      reset();
+      navigate("/auth");
+    } catch (error) {}
   };
 
   return {
@@ -71,7 +66,6 @@ const useAuth = () => {
     navigate,
     loginSubmit,
     registerSubmit,
-    formRef,
   };
 };
 

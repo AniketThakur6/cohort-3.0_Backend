@@ -17,7 +17,6 @@ const LoginPage = () => {
     handleSubmit,
     isSubmitting,
     errors,
-    formRef,
     navigate,
     loginSubmit,
   } = useAuth();
@@ -65,7 +64,6 @@ const LoginPage = () => {
 
           {/* Form */}
           <form
-            ref={formRef}
             onSubmit={handleSubmit(loginSubmit)}
             className="space-y-5"
           >

@@ -46,7 +46,7 @@ export const productValidator = [
     .notEmpty()
     .withMessage("Category can't be Empty")
     .bail()
-    .isLength({ min: 5, max: 50 })
+    .isLength({ min: 3, max: 50 })
     .withMessage("Category must be between 5 to 50 characters")
     .bail()
     .isAlpha("en-US", { ignore: " -" })

@@ -10,7 +10,7 @@ export const loginIpLimiter = rateLimit({
 
 export const registerIpLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  limit: 899999, // 8 req
+  limit: 8999990, // 8 req
   standardHeaders: true,
   legacyHeaders: false,
   ipv6Subnet: 56,
@@ -50,7 +50,7 @@ export const productDeleteLimiter = rateLimit({
 
 export const standardIpLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  limit: 150,
+  limit: 1500000000, // 150
   standardHeaders: true,
   legacyHeaders: false,
   ipv6Subnet: 56,
