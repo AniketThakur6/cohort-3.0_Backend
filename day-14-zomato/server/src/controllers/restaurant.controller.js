@@ -3,6 +3,7 @@ const MenuItem = require("../models/menuItem.model");
 const getPagination = require("../utils/pagination");
 const findOwnedRestaurant = require("../utils/ownership");
 const orderModel = require("../models/order.model");
+const mongoose = require("mongoose");
 
 // Turns lng/lat from the request body into a GeoJSON point (or null if invalid)
 function buildLocation(lng, lat) {
@@ -117,13 +118,13 @@ async function getRestaurantRevenue(req, res) {
   const to = req.query.to ? new Date(req.query.to) : new Date();
   const from = req.query.from
     ? new Date(req.query.from)
-    : new Date(to.getTime() - 7 * 24 * 60 * 60 * 1000);
-  from.setHours(0, 0, 0, 0);
+    : new Date(to.getTime() - 6 * 24 * 60 * 60 * 1000);
+  from.setUTCHours(0, 0, 0, 0);
 
   const response = await orderModel.aggregate([
     {
       $match: {
-        restaurant: new ObjectId(id),
+        restaurant: new mongoose.Types.ObjectId(id),
         status: "delivered",
         createdAt: {
           $gt: from,
@@ -175,8 +176,73 @@ async function getRestaurantRevenue(req, res) {
     message: "Revenue Details",
     revenue: revenue.totalRevenue,
     from: from.toISOString().split("T")[0],
-    to: to.toISOString().split("T")[0],
+    to: to.toISOString(),
     days: revenue.days,
+  });
+}
+
+async function getTopCustomer(req, res) {
+  const { id } = req.params;
+
+  const response = await orderModel.aggregate([
+    {
+      $match: {
+        restaurant: new mongoose.Types.ObjectId(id),
+        status: "delivered",
+      },
+    },
+    {
+      $group: {
+        _id: "$customer",
+        totalRevenue: {
+          $sum: "$totalAmount",
+        },
+        totalOrder: {
+          $sum: 1,
+        },
+        averageOrderValue: {
+          $avg: "$totalAmount",
+        },
+      },
+    },
+    {
+      $sort: {
+        totalRevenue: -1,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "_id",
+        foreignField: "_id",
+        as: "user",
+        pipeline: [
+          {
+            $project: {
+              name: 1,
+              email: 1,
+              _id: 0,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: {
+        path: "$user",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $limit: 5,
+    },
+  ]);
+
+  console.log(response)
+
+  return res.json({
+    message: "Top customers retrieved successfully",
+    topCustomer: response,
   });
 }
 
@@ -187,4 +253,5 @@ module.exports = {
   updateRestaurant,
   deleteRestaurant,
   getRestaurantRevenue,
+  getTopCustomer,
 };
