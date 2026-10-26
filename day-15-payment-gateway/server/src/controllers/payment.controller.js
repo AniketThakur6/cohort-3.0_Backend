@@ -1,5 +1,5 @@
 import productModel from "../models/product.model.js";
-import razorpay from "./../config/razorpay.js";
+import razorpayInstance from "./../config/razorpay.js";
 import paymentModel from "../models/payment.model.js";
 import config from "../config/config.js";
 import crypto from "crypto";
@@ -26,13 +26,22 @@ export const createProduct = async (req, res) => {
   });
 };
 
+export const getProduct = async (req, res) => {
+  const products = await productModel.find();
+
+  res.status(200).json({
+    message: "successfully",
+    products,
+  });
+};
+
 export const createOrder = async (req, res) => {
   const userId = "6782d09c0001000000000000";
 
-  const product = await productModel.findById(req.pramas.productId);
+  const product = await productModel.findById(req.params.productId);
   if (!product) return res.status(404).json({ message: "Product not found" });
 
-  const order = await razorpay.orders.create({
+  const order = await razorpayInstance.orders.create({
     amount: Math.round(product.price * 100),
     currency: product.currency,
     receipt: `rcpt_${Date.now()}`,
@@ -52,34 +61,38 @@ export const createOrder = async (req, res) => {
     orderId: order.id,
     amount: order.amount,
     currency: order.currency,
-    keyId: config.RAZORPAY_KEY_ID,
+    keyId: razorpayInstance.key_id,
+    name: product.name,
   });
 };
 
 export const verifyPayment = async (req, res) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
+  console.log(razorpay_signature);
+
   const expectedSignature = crypto
     .createHmac("sha256", config.RAZORPAY_KEY_SECRET)
-    .update(`${razorpay_order_id}` | `${razorpay_payment_id}`)
+    .update(`${razorpay_order_id}|${razorpay_payment_id}`)
     .digest("hex");
 
-  if(expectedSignature !== razorpay_signature){
+  console.log(expectedSignature);
+
+  if (expectedSignature !== razorpay_signature) {
     res.status(400).json({
       status: "failed",
-      message:"Invalid signature",
-    })
-  }  
+      message: "Invalid signature",
+    });
+  }
 
   const payment = await paymentModel.findOneAndUpdate(
-    {orderId: razorpay_order_id},
-    {paymentId: razorpay_payment_id,signature: razorpay_signature , status: "completed"},
-    {returnDocument: "after"}
-  )
+    { orderId: razorpay_order_id },
+    { paymentId: razorpay_payment_id, signature: razorpay_signature, status: "completed" },
+    { returnDocument: "after" },
+  );
 
   res.status(200).json({
-    status: "success", 
-    orderId: payment.orderId
-  })
-
+    status: "success",
+    orderId: payment.orderId,
+  });
 };

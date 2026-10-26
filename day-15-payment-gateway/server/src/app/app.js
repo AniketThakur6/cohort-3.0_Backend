@@ -1,6 +1,10 @@
 import express from "express";
-import paymentRouter from "../routes/payment.route.js"
-import morgan from 'morgan'
+import paymentRouter from "../routes/payment.route.js";
+import morgan from "morgan";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
@@ -8,11 +12,9 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.get("/", (req, res) => {
-  res.status(200).json({
-    message: "Working",
-  });
+  res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
-app.use("/api/payment",paymentRouter)
+app.use("/api/payment", paymentRouter);
 
 export default app;

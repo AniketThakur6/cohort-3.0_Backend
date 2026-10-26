@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Razorpay</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.20.0/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <h1>Razorpay payemnt gateway</h1>
+    <div class="products"></div>
+  </body>
+  <script>
+    const productDiv = document.querySelector(".products");
+
+    async function render() {
+      const resdata = await axios.get("http://localhost:3000/api/payment/get-product");
+
+      productDiv.innerHTML = "";
+      productDiv.innerHTML = resdata.data.products
+        .map(
+          (product) =>
+            `<div className="product-card">
+            <h2>${product.name}</h2>
+
+         <h3>
+        Amount: ${new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: product.currency,
+        }).format(product.price)}
+            </h3>
+
+          <button onclick="handlePayment('${product._id}')">Pay Now</button>
+        </div>`,
+        )
+        .join("");
+    }
+
+    render();
+
+    const handlePayment = async (id) => {
+      const response = await axios.post(`http://localhost:3000/api/payment/create/order/${id}`);
+
+      const { data } = response;
+
+      const rzp = new Razorpay({
+        key: data.keyId,
+        order_id: data.orderId,
+        amount: data.amount,
+        currency: data.currency,
+        name: data.name,
+        description: "payment for order" + data.orderId,
+
+        handler: async function (response) {
+          const verify = await axios.post("http://localhost:3000/api/payment/verify", response);
+        },
+      });
+
+      rzp.open();
+    };
+  </script>
+</html>
