@@ -3,6 +3,7 @@ import razorpayInstance from "./../config/razorpay.js";
 import paymentModel from "../models/payment.model.js";
 import config from "../config/config.js";
 import crypto from "crypto";
+import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils.js";
 
 export const createProduct = async (req, res) => {
   const { price, currency, name } = req.body;
@@ -77,6 +78,16 @@ export const verifyPayment = async (req, res) => {
     .digest("hex");
 
   console.log(expectedSignature);
+
+  const isValid = validatePaymentVerification(
+    {
+      razorpay_order_id,
+      razorpay_payment_id,
+    },
+    razorpay_signature,
+    config.RAZORPAY_KEY_ID,
+  );
+ 
 
   if (expectedSignature !== razorpay_signature) {
     res.status(400).json({
