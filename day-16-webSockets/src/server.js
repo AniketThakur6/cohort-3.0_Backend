@@ -1,19 +1,11 @@
 import app from "./app/app.js";
 import { createServer } from "http";
-import { Server } from "socket.io";
+import initializeSocket from "./sockets/socket.server.js";
 
 const httpServer = createServer(app);
+initializeSocket(httpServer);
 
-const io = new Server(httpServer);
-
-io.on("connection", (socket) => {
-  console.log(`connected:`, socket.id);
-
-  socket.on("disconnect", (reason) => {
-    console.log("disconnected:", socket.id, reason);
-  });
-});
-
-httpServer.listen(3000, () => {
-  console.log(`server is running at ${3000}`);
+const port = 3000;
+httpServer.listen(port, () => {
+  console.log(`server is running at ${port}`);
 });
